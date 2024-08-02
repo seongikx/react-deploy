@@ -1,7 +1,5 @@
 import { rest } from 'msw';
 
-import { getProductDetailPath } from './useGetProductDetail';
-
 export type Wish = {
   id: number;
   product: {
@@ -128,7 +126,7 @@ export const wishMockHandler = [
     );
   }),
 
-  rest.get(getProductDetailPath(':productId'), (req, res, ctx) => {
+  rest.get('/api/products/:productId', (req, res, ctx) => {
     const { productId } = req.params as { productId: string };
     const product = PRODUCTS_MOCK_DATA.content.find((item) => item.id === parseInt(productId));
     if (product) {

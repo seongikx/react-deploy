@@ -2,6 +2,7 @@
   "name": "kakao-tech-campus-frontend-project",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://seongikx.github.io/react-deploy",
   "scripts": {
     "start:mock": "cross-env REACT_APP_RUN_MSW=true npm run start",
     "test:mock": "cross-env REACT_APP_RUN_MSW=true npm run test",

@@ -1,30 +1,15 @@
 import { rest } from 'msw';
 
-import { getProductDetailPath } from './useGetProductDetail';
-import { getProductOptionsPath } from './useGetProductOptions';
-import { getProductsPath } from './useGetProducts';
-
 export const productsMockHandler = [
-  rest.get(
-    getProductsPath({
-      categoryId: '2920',
-    }),
-    (_, res, ctx) => {
-      return res(ctx.json(PRODUCTS_MOCK_DATA));
-    },
-  ),
-  rest.get(
-    getProductsPath({
-      categoryId: '2930',
-    }),
-    (_, res, ctx) => {
-      return res(ctx.json(PRODUCTS_MOCK_DATA));
-    },
-  ),
-  rest.get(getProductDetailPath(':productId'), (_, res, ctx) => {
-    return res(ctx.json(PRODUCTS_MOCK_DATA.content[0]));
+  rest.get('/api/products', (_, res, ctx) => {
+    return res(ctx.json(PRODUCTS_MOCK_DATA));
   }),
-  rest.get(getProductOptionsPath(':productId'), (_, res, ctx) => {
+  rest.get('/api/products/:productId', (req, res, ctx) => {
+    const { productId } = req.params;
+    const product = PRODUCTS_MOCK_DATA.content.find((p) => p.id.toString() === productId);
+    return res(ctx.json(product || PRODUCTS_MOCK_DATA.content[0]));
+  }),
+  rest.get('/api/products/:productId/options', (_, res, ctx) => {
     return res(
       ctx.json([
         {

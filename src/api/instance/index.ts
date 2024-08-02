@@ -1,3 +1,4 @@
+// src/api/instance/index.ts
 import { QueryClient } from '@tanstack/react-query';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
@@ -16,10 +17,9 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   return instance;
 };
 
-export const BASE_URL = 'https://api.example.com';
-// TODO: 추후 서버 API 주소 변경 필요
+// BASE_URL 제거
 export const fetchInstance = initInstance({
-  baseURL: 'https://api.example.com',
+  baseURL: '', // 초기 baseURL은 빈 문자열로 설정, ApiProvider에서 설정함
 });
 
 export const queryClient = new QueryClient({

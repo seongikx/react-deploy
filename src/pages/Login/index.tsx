@@ -25,7 +25,7 @@ export const LoginPage = () => {
       const data = (await login(email, password)) as { email: string; token: string };
       authSessionStorage.set(data.token);
 
-      const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;
+      const redirectUrl = queryParams.get('redirect') ?? `${process.env.PUBLIC_URL}/`;
       window.location.replace(redirectUrl);
     } catch (error) {
       alert('로그인에 실패했습니다. 다시 시도해주세요.');

@@ -1,3 +1,4 @@
+// src/api/hooks/useGetProducts.ts
 import {
   type InfiniteData,
   useInfiniteQuery,
@@ -6,8 +7,7 @@ import {
 
 import type { ProductData } from '@/types';
 
-import { BASE_URL } from '../instance';
-import { fetchInstance } from './../instance/index';
+import { fetchInstance } from '../instance';
 
 type RequestParams = {
   categoryId: string;
@@ -32,19 +32,17 @@ type ProductsResponseRawData = {
   last: boolean;
 };
 
-export const getProductsPath = ({ categoryId, pageToken, maxResults }: RequestParams) => {
-  const params = new URLSearchParams();
+const getProducts = async (params: RequestParams): Promise<ProductsResponseData> => {
+  const queryParams = new URLSearchParams({
+    categoryId: params.categoryId,
+    sort: 'name,asc',
+    page: params.pageToken || '0',
+    size: (params.maxResults || 20).toString(),
+  });
 
-  params.append('categoryId', categoryId);
-  params.append('sort', 'name,asc');
-  if (pageToken) params.append('page', pageToken);
-  if (maxResults) params.append('size', maxResults.toString());
-
-  return `${BASE_URL}/api/products?${params.toString()}`;
-};
-
-export const getProducts = async (params: RequestParams): Promise<ProductsResponseData> => {
-  const response = await fetchInstance.get<ProductsResponseRawData>(getProductsPath(params));
+  const response = await fetchInstance.get<ProductsResponseRawData>(
+    `/api/products?${queryParams.toString()}`,
+  );
   const data = response.data;
 
   return {
