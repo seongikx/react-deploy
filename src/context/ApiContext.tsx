@@ -1,22 +1,31 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { fetchInstance } from '@/api/instance';
+import { initInstance } from '../api/instance';
 
-interface ApiContextProps {
+interface ApiContextType {
   apiUrl: string;
   setApiUrl: (url: string) => void;
 }
 
-const ApiContext = createContext<ApiContextProps | undefined>(undefined);
+const ApiContext = createContext<ApiContextType | undefined>(undefined);
 
-export const ApiProvider = ({ children }: { children: ReactNode }) => {
-  const [apiUrl, setApiUrl] = useState('http://3.17.81.229:8080'); // 기본 URL 설정
+export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // 세션 스토리지에서 API URL을 가져오거나 기본 URL로 초기화합니다.
+  const initialUrl = sessionStorage.getItem('apiUrl') || 'http://3.34.182.32:8080';
+  const [apiUrl, setApiUrlState] = useState(initialUrl);
 
   useEffect(() => {
-    // apiUrl이 변경될 때마다 axios 인스턴스의 baseURL을 업데이트
-    fetchInstance.defaults.baseURL = apiUrl;
+    sessionStorage.setItem('apiUrl', apiUrl); // API URL 변경 시 세션 스토리지에 저장
   }, [apiUrl]);
+
+  const setApiUrl = (url: string) => {
+    setApiUrlState(url);
+    sessionStorage.setItem('apiUrl', url); // API URL 변경 시 세션 스토리지에 저장
+  };
+
+  // axios 인스턴스를 URL 변경 시마다 업데이트합니다.
+  initInstance({ baseURL: apiUrl });
 
   return <ApiContext.Provider value={{ apiUrl, setApiUrl }}>{children}</ApiContext.Provider>;
 };

@@ -14,7 +14,6 @@ export const CategorySection = () => {
 
   if (isLoading || isError) return null;
   if (!data) return null;
-
   return (
     <Wrapper>
       <Container>
@@ -24,7 +23,7 @@ export const CategorySection = () => {
             md: 6,
           }}
         >
-          {data.map((category) => (
+          {data?.data.map((category) => (
             <Link key={category.id} to={getDynamicPath.category(category.id.toString())}>
               <CategoryItem image={category.imageUrl} label={category.name} />
             </Link>
