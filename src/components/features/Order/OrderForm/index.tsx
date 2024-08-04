@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { fetchInstance } from '@/api/instance'; // fetchInstance import
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { SplitLayout } from '@/components/common/layouts/SplitLayout';
+import { useAuth } from '@/provider/Auth'; // useAuth import
 import type { OrderFormData, OrderHistory } from '@/types';
 
 import { HEADER_HEIGHT } from '../../Layout/Header';
@@ -16,19 +18,22 @@ type Props = {
 
 export const OrderForm = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
+  const authInfo = useAuth(); // 인증 정보 가져오기
 
   const methods = useForm<OrderFormData>({
     defaultValues: {
       productId: id,
       productQuantity: count,
+      messageCardTextMessage: '',
       senderId: 0,
       receiverId: 0,
       hasCashReceipt: false,
+      pointsUsed: 0, // 사용 포인트 초기화
     },
   });
   const { handleSubmit } = methods;
 
-  const handleForm = (values: OrderFormData) => {
+  const handleForm = async (values: OrderFormData) => {
     const { errorMessage, isValid } = validateOrderForm(values);
 
     if (!isValid) {
@@ -36,11 +41,32 @@ export const OrderForm = ({ orderHistory }: Props) => {
       return;
     }
 
-    console.log('values', values);
-    alert('주문이 완료되었습니다.');
+    try {
+      // 주문 요청
+      const response = await fetchInstance.post(
+        '/api/orders',
+        {
+          optionId: values.productId,
+          quantity: values.productQuantity,
+          message: values.messageCardTextMessage,
+          points: values.pointsUsed,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authInfo?.token || ''}`,
+          },
+        },
+      );
+
+      // 주문 완료 메시지 출력
+      alert(`${response.data.message}`);
+    } catch (error) {
+      console.error('주문 실패', error);
+      alert('주문 중 오류가 발생했습니다.');
+    }
   };
 
-  // Submit 버튼을 누르면 form이 제출되는 것을 방지하기 위한 함수
+  // Enter 키로 form이 제출되는 것을 방지하기 위한 함수
   const preventEnterKeySubmission = (e: React.KeyboardEvent<HTMLFormElement>) => {
     const target = e.target as HTMLFormElement;
     if (e.key === 'Enter' && !['TEXTAREA'].includes(target.tagName)) {

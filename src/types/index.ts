@@ -43,6 +43,7 @@ export type OrderFormData = {
   senderId: number;
   receiverId: number;
   hasCashReceipt: boolean;
+  pointsUsed: number; // 추가된 포인트 사용 상태
   cashReceiptType?: 'PERSONAL' | 'BUSINESS';
   cashReceiptNumber?: string;
 };
