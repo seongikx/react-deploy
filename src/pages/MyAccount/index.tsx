@@ -16,8 +16,8 @@ export const MyAccountPage = () => {
 
   const fetchWishes = async () => {
     try {
-      const data = await getWishes();
-      setWishes(data.content);
+      const data = await getWishes(authInfo?.token || '', 0, 10, 'createdDate,desc');
+      setWishes(data.data.content);
     } catch (error) {
       console.error('Failed to fetch wishes', error);
     }
@@ -25,8 +25,8 @@ export const MyAccountPage = () => {
 
   const handleRemoveWish = async (wishId: number) => {
     try {
-      await removeWish(wishId);
-      setWishes((prevWishes) => prevWishes.filter((wish) => wish.id !== wishId));
+      await removeWish(wishId, authInfo?.token || '');
+      fetchWishes();
     } catch (error) {
       console.error('Failed to remove wish', error);
     }
@@ -34,19 +34,20 @@ export const MyAccountPage = () => {
 
   useEffect(() => {
     fetchWishes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {
     authSessionStorage.set(undefined);
 
-    const redirectURL = `${window.location.origin}${RouterPath.home}`;
+    const redirectURL = `${process.env.PUBLIC_URL}${RouterPath.home}`;
     window.location.replace(redirectURL);
   };
 
   return (
     <Wrapper>
       <Text fontSize="2xl" fontWeight="bold">
-        {authInfo?.name}님 안녕하세요!
+        사용자님 안녕하세요!
       </Text>
       <Spacing height={64} />
       <Button
@@ -61,7 +62,7 @@ export const MyAccountPage = () => {
       </Button>
       <Spacing height={32} />
       <Grid templateColumns="repeat(auto-fill, minmax(240px, 1fr))" gap={6}>
-        {wishes.map((wish) => (
+        {wishes?.map((wish) => (
           <GridItem key={wish.id}>
             <Box
               p={4}
