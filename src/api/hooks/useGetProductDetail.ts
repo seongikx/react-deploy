@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import type { ProductData } from '@/types';
 
@@ -10,7 +10,7 @@ export type ProductDetailRequestParams = {
 
 type Props = ProductDetailRequestParams;
 
-export type GoodsDetailResponseData = ProductData;
+export type GoodsDetailResponseData = { data: ProductData };
 
 const getProductDetail = async (params: ProductDetailRequestParams) => {
   const response = await fetchInstance.get<GoodsDetailResponseData>(
@@ -20,7 +20,7 @@ const getProductDetail = async (params: ProductDetailRequestParams) => {
 };
 
 export const useGetProductDetail = ({ productId }: Props) => {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: [`/api/products/${productId}`],
     queryFn: () => getProductDetail({ productId }),
   });

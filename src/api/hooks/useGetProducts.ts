@@ -1,4 +1,3 @@
-// src/api/hooks/useGetProducts.ts
 import {
   type InfiniteData,
   useInfiniteQuery,
@@ -16,7 +15,7 @@ type RequestParams = {
 };
 
 type ProductsResponseData = {
-  products: ProductData[];
+  content: ProductData[];
   nextPageToken?: string;
   pageInfo: {
     totalResults: number;
@@ -25,28 +24,32 @@ type ProductsResponseData = {
 };
 
 type ProductsResponseRawData = {
-  content: ProductData[];
-  number: number;
-  totalElements: number;
-  size: number;
-  last: boolean;
+  data: {
+    content: ProductData[]; // 변경된 부분: raw 데이터 구조를 API 명세에 맞게 수정
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+    last: boolean;
+  };
 };
 
 const getProducts = async (params: RequestParams): Promise<ProductsResponseData> => {
   const queryParams = new URLSearchParams({
     categoryId: params.categoryId,
-    sort: 'name,asc',
+    sort: 'price,asc', // 정렬 기준을 명세에 맞춰 수정
     page: params.pageToken || '0',
     size: (params.maxResults || 20).toString(),
   });
 
   const response = await fetchInstance.get<ProductsResponseRawData>(
-    `/api/products?${queryParams.toString()}`,
+    `/api/products/categories/${params.categoryId}?${queryParams.toString()}`,
   );
-  const data = response.data;
+
+  const data = response.data.data;
 
   return {
-    products: data.content,
+    content: data.content, // 변경된 부분: products는 data.data로
     nextPageToken: data.last === false ? (data.number + 1).toString() : undefined,
     pageInfo: {
       totalResults: data.totalElements,

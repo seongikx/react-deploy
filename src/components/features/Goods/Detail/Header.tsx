@@ -9,13 +9,12 @@ type Props = ProductDetailRequestParams;
 
 export const GoodsDetailHeader = ({ productId }: Props) => {
   const { data: detail } = useGetProductDetail({ productId });
-
   return (
     <Wrapper>
-      <GoodsImage src={detail.imageUrl} alt={detail.name} />
+      <GoodsImage src={detail?.data.imageUrl ?? ''} alt={detail?.data.name ?? ''} />
       <InfoWrapper>
-        <Title>{detail.name}</Title>
-        <Price>{detail.price}원</Price>
+        <Title>{detail?.data.name ?? '상품명'}</Title>
+        <Price>{detail?.data.price ?? 0}원</Price>
         <Divider color="#f5f5f5" />
         <Notice>카톡 친구가 아니어도 선물 코드로 선물 할 수 있어요!</Notice>
         <Divider color="#f5f5f5" />

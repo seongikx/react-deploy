@@ -17,7 +17,7 @@ export const OrderFormOrderInfo = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
 
   const { data: detail } = useGetProductDetail({ productId: id.toString() });
-  const totalPrice = detail.price * count;
+  const totalPrice = (detail?.data.price ?? 0) * count; // 가격이 로드되지 않은 경우 0으로 처리
 
   return (
     <Wrapper>

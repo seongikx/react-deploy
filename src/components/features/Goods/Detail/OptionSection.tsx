@@ -24,7 +24,7 @@ export const OptionSection = ({ productId }: Props) => {
 
   const [countAsString, setCountAsString] = useState('1');
   const totalPrice = useMemo(() => {
-    return detail.price * Number(countAsString);
+    return (detail?.data.price ?? 0) * Number(countAsString);
   }, [detail, countAsString]);
 
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ export const OptionSection = ({ productId }: Props) => {
     }
 
     try {
-      await addWish(parseInt(productId));
+      await addWish(parseInt(productId), authInfo.token);
       alert('관심 등록 완료');
     } catch (error) {
       console.error('Failed to add wish', error);
@@ -69,7 +69,11 @@ export const OptionSection = ({ productId }: Props) => {
 
   return (
     <Wrapper>
-      <CountOptionItem name={options[0].name} value={countAsString} onChange={setCountAsString} />
+      <CountOptionItem
+        name={options?.[0]?.name ?? ''}
+        value={countAsString}
+        onChange={setCountAsString}
+      />
       <BottomWrapper>
         <PricingWrapper>
           총 결제 금액 <span>{totalPrice}원</span>

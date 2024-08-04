@@ -1,24 +1,23 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import type { ProductOptionsData } from '@/types';
 
 import { fetchInstance } from '../instance';
-import type { ProductDetailRequestParams } from './useGetProductDetail';
 
-type Props = ProductDetailRequestParams;
+type ProductDetailRequestParams = {
+  productId: string;
+};
 
-export type ProductOptionsResponseData = ProductOptionsData[];
+const getProductOptionsPath = (productId: string) => `/api/products/${productId}/options`;
 
-const getProductOptions = async (params: ProductDetailRequestParams) => {
-  const response = await fetchInstance.get<ProductOptionsResponseData>(
-    `/api/products/${params.productId}/options`,
-  );
+const getProductOptions = async ({ productId }: ProductDetailRequestParams) => {
+  const response = await fetchInstance.get<ProductOptionsData[]>(getProductOptionsPath(productId));
   return response.data;
 };
 
-export const useGetProductOptions = ({ productId }: Props) => {
-  return useSuspenseQuery({
-    queryKey: [`/api/products/${productId}/options`],
+export const useGetProductOptions = ({ productId }: ProductDetailRequestParams) => {
+  return useQuery({
+    queryKey: ['productOptions', productId],
     queryFn: () => getProductOptions({ productId }),
   });
 };
