@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import type { Wish } from '@/api/hooks/wishes';
 import { getWishes, removeWish } from '@/api/hooks/wishes';
+import { fetchInstance } from '@/api/instance';
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { useAuth } from '@/provider/Auth';
@@ -13,6 +14,7 @@ import { authSessionStorage } from '@/utils/storage';
 export const MyAccountPage = () => {
   const authInfo = useAuth();
   const [wishes, setWishes] = useState<Wish[]>([]);
+  const [points, setPoints] = useState<number>(0);
 
   const fetchWishes = async () => {
     try {
@@ -20,6 +22,19 @@ export const MyAccountPage = () => {
       setWishes(data.data.content);
     } catch (error) {
       console.error('Failed to fetch wishes', error);
+    }
+  };
+
+  const fetchPoints = async () => {
+    try {
+      const response = await fetchInstance.get('/api/members/points', {
+        headers: {
+          Authorization: `Bearer ${authInfo?.token || ''}`,
+        },
+      });
+      setPoints(response.data.data.points);
+    } catch (error) {
+      console.error('Failed to fetch points', error);
     }
   };
 
@@ -34,6 +49,7 @@ export const MyAccountPage = () => {
 
   useEffect(() => {
     fetchWishes();
+    fetchPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,7 +63,10 @@ export const MyAccountPage = () => {
   return (
     <Wrapper>
       <Text fontSize="2xl" fontWeight="bold">
-        사용자님 안녕하세요!
+        {authInfo?.name}님 안녕하세요!
+      </Text>
+      <Text fontSize="xl" fontWeight="bold" color="teal.500">
+        현재 보유 포인트: {points}점
       </Text>
       <Spacing height={64} />
       <Button
