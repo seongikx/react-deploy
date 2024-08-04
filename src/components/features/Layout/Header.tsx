@@ -6,21 +6,28 @@ import { Container } from '@/components/common/layouts/Container';
 import { useApi } from '@/context/ApiContext';
 import { useAuth } from '@/provider/Auth';
 import { getDynamicPath, RouterPath } from '@/routes/path';
+import { authSessionStorage } from '@/utils/storage';
 
 const apiServers: { [key: string]: string } = {
-  유경미: 'http://3.17.81.229:8080',
-  김태윤: 'http://43.202.1.135:8080',
   강수민: 'http://3.34.182.32:8080',
+  유경미: 'https://yookm-gift.duckdns.org',
+  김태윤: 'http://3.35.53.219:8080',
 };
 
 export const Header = () => {
   const navigate = useNavigate();
   const authInfo = useAuth();
   const { setApiUrl } = useApi();
-  const [selectedServer, setSelectedServer] = useState('유경미');
+  const [selectedServer, setSelectedServer] = useState(() => {
+    return (
+      Object.keys(apiServers).find((key) => apiServers[key] === sessionStorage.getItem('apiUrl')) ||
+      '강수민'
+    );
+  });
 
   useEffect(() => {
-    setApiUrl(apiServers[selectedServer]); // 선택된 서버의 URL로 설정
+    const newUrl = apiServers[selectedServer];
+    setApiUrl(newUrl); // 선택된 서버의 URL로 설정
   }, [selectedServer, setApiUrl]);
 
   const handleLogin = () => {
@@ -37,7 +44,14 @@ export const Header = () => {
           />
         </Link>
         <RightWrapper>
-          <select value={selectedServer} onChange={(e) => setSelectedServer(e.target.value)}>
+          <select
+            value={selectedServer}
+            onChange={(e) => {
+              setSelectedServer(e.target.value);
+              authSessionStorage.set(undefined); // session 정보 초기화 (api 변경시 자동 로그아웃)
+              window.location.reload();
+            }}
+          >
             {Object.keys(apiServers).map((key) => (
               <option key={key} value={key}>
                 {key}
