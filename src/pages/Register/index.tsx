@@ -22,9 +22,9 @@ export const RegisterPage = () => {
 
     try {
       const data = await register(email, password);
-      authSessionStorage.set(data.email);
+      authSessionStorage.set(data.data.token); // 토큰 저장
 
-      const redirectUrl = queryParams.get('redirect') ?? `${window.location.origin}/`;
+      const redirectUrl = queryParams.get('redirect') ?? `${process.env.PUBLIC_URL}/`;
       window.location.replace(redirectUrl);
     } catch (error) {
       alert('회원가입에 실패했습니다. 다시 시도해주세요.');
@@ -54,6 +54,7 @@ export const RegisterPage = () => {
   );
 };
 
+// 스타일 컴포넌트 정의
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;

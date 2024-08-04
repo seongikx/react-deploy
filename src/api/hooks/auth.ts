@@ -1,13 +1,24 @@
-import axios from 'axios';
+import { fetchInstance } from '../instance';
 
-const API_URL = '/api/members';
+interface AuthResponse {
+  data: {
+    email: string;
+    token: string;
+  };
+}
 
-export const register = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/register`, { email, password });
+export const register = async (email: string, password: string): Promise<AuthResponse> => {
+  const response = await fetchInstance.post<AuthResponse>('/api/members/register', {
+    email,
+    password,
+  });
   return response.data;
 };
 
-export const login = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/login`, { email, password });
+export const login = async (email: string, password: string): Promise<AuthResponse> => {
+  const response = await fetchInstance.post<AuthResponse>('/api/members/login', {
+    email,
+    password,
+  });
   return response.data;
 };

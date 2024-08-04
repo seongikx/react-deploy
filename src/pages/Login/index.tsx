@@ -22,8 +22,8 @@ export const LoginPage = () => {
     }
 
     try {
-      const data = (await login(email, password)) as { email: string; token: string };
-      authSessionStorage.set(data.token);
+      const data = await login(email, password);
+      authSessionStorage.set(data.data.token); // 토큰 저장
 
       const redirectUrl = queryParams.get('redirect') ?? `${process.env.PUBLIC_URL}/`;
       window.location.replace(redirectUrl);
@@ -57,6 +57,7 @@ export const LoginPage = () => {
   );
 };
 
+// 스타일 컴포넌트 정의
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
