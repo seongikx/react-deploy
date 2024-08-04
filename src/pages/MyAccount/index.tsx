@@ -63,7 +63,7 @@ export const MyAccountPage = () => {
   return (
     <Wrapper>
       <Text fontSize="2xl" fontWeight="bold">
-        {authInfo?.name}님 안녕하세요!
+        사용자님 안녕하세요!
       </Text>
       <Text fontSize="xl" fontWeight="bold" color="teal.500">
         현재 보유 포인트: {points}점
