@@ -9,9 +9,11 @@ import { getDynamicPath, RouterPath } from '@/routes/path';
 import { authSessionStorage } from '@/utils/storage';
 
 const apiServers: { [key: string]: string } = {
-  강수민: 'http://3.34.182.32:8080',
+  // 강수민: 'http://3.34.182.32:8080',
+  강수민: 'https://do-free.duckdns.org/kang',
   유경미: 'https://yookm-gift.duckdns.org',
-  김태윤: 'http://3.35.53.219:8080',
+  // 김태윤: 'http://3.35.53.219:8080',
+  김태윤: 'https://do-free.duckdns.org/kim',
 };
 
 export const Header = () => {
