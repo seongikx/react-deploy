@@ -7,7 +7,6 @@ import { useGetProductDetail } from '@/api/hooks/useGetProductDetail';
 import { fetchInstance } from '@/api/instance'; // fetchInstance import
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
-import { useAuth } from '@/provider/Auth'; // useAuth import
 import type { OrderHistory } from '@/types';
 
 import { HeadingText } from '../Common/HeadingText';
@@ -20,28 +19,23 @@ type Props = {
 
 export const OrderFormOrderInfo = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
-  const authInfo = useAuth();
   const [points, setPoints] = useState<number>(0); // 보유 포인트 상태
   const { data: detail } = useGetProductDetail({ productId: id.toString() });
   const { watch, setValue } = useFormContext();
   const pointsUsed = watch('pointsUsed'); // 사용 포인트 값 추적
 
-  const totalPrice = (detail?.data.price ?? 0) * count; // 가격이 로드되지 않은 경우 0으로 처리
+  const totalPrice = (detail?.price ?? 0) * count; // 가격이 로드되지 않은 경우 0으로 처리
   const finalPrice = Math.max(0, totalPrice - pointsUsed); // 포인트 차감 후 최소 0원
 
   // 포인트 조회
   const fetchPoints = useCallback(async () => {
     try {
-      const response = await fetchInstance.get('/api/members/points', {
-        headers: {
-          Authorization: `Bearer ${authInfo?.token || ''}`,
-        },
-      });
-      setPoints(response.data.data.points);
+      const response = await fetchInstance.get('/api/members/points');
+      setPoints(response.data.points);
     } catch (error) {
       console.error('포인트 조회 실패', error);
     }
-  }, [authInfo]);
+  }, []);
 
   useEffect(() => {
     fetchPoints();

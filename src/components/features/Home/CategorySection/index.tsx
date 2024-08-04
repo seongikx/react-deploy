@@ -11,7 +11,6 @@ import { CategoryItem } from './CategoryItem';
 
 export const CategorySection = () => {
   const { data, isLoading, isError } = useGetCategories();
-
   if (isLoading || isError) return null;
   if (!data) return null;
   return (
@@ -23,7 +22,7 @@ export const CategorySection = () => {
             md: 6,
           }}
         >
-          {data?.data.map((category) => (
+          {data?.map((category) => (
             <Link key={category.id} to={getDynamicPath.category(category.id.toString())}>
               <CategoryItem image={category.imageUrl} label={category.name} />
             </Link>

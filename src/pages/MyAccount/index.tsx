@@ -7,19 +7,17 @@ import { getWishes, removeWish } from '@/api/hooks/wishes';
 import { fetchInstance } from '@/api/instance';
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
-import { useAuth } from '@/provider/Auth';
 import { RouterPath } from '@/routes/path';
 import { authSessionStorage } from '@/utils/storage';
 
 export const MyAccountPage = () => {
-  const authInfo = useAuth();
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [points, setPoints] = useState<number>(0);
 
   const fetchWishes = async () => {
     try {
-      const data = await getWishes(authInfo?.token || '', 0, 10, 'createdDate,desc');
-      setWishes(data.data.content);
+      const data = await getWishes(0, 10, 'createdDate,desc');
+      setWishes(data.content);
     } catch (error) {
       console.error('Failed to fetch wishes', error);
     }
@@ -27,12 +25,8 @@ export const MyAccountPage = () => {
 
   const fetchPoints = async () => {
     try {
-      const response = await fetchInstance.get('/api/members/points', {
-        headers: {
-          Authorization: `Bearer ${authInfo?.token || ''}`,
-        },
-      });
-      setPoints(response.data.data.points);
+      const response = await fetchInstance.get('/api/members/points');
+      setPoints(response.data.points);
     } catch (error) {
       console.error('Failed to fetch points', error);
     }
@@ -40,7 +34,7 @@ export const MyAccountPage = () => {
 
   const handleRemoveWish = async (wishId: number) => {
     try {
-      await removeWish(wishId, authInfo?.token || '');
+      await removeWish(wishId);
       fetchWishes();
     } catch (error) {
       console.error('Failed to remove wish', error);

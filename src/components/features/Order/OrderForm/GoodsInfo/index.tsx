@@ -21,11 +21,11 @@ export const GoodsInfo = ({ orderHistory }: Props) => {
       <GoodsWrapper>
         <GoodsInfoWrapper>
           <GoodsInfoImage>
-            <Image src={detail?.data.imageUrl ?? ''} width={86} ratio="square" />
+            <Image src={detail?.imageUrl ?? ''} width={86} ratio="square" />
           </GoodsInfoImage>
           <GoodsInfoTextWrapper>
             <GoodsInfoTextTitle>
-              {detail?.data.name ?? '상품 이름'} X {count}개
+              {detail?.name ?? '상품 이름'} X {count}개
             </GoodsInfoTextTitle>
           </GoodsInfoTextWrapper>
         </GoodsInfoWrapper>

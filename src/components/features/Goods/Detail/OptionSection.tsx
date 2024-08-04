@@ -24,7 +24,7 @@ export const OptionSection = ({ productId }: Props) => {
 
   const [countAsString, setCountAsString] = useState('1');
   const totalPrice = useMemo(() => {
-    return (detail?.data.price ?? 0) * Number(countAsString);
+    return (detail?.price ?? 0) * Number(countAsString);
   }, [detail, countAsString]);
 
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ export const OptionSection = ({ productId }: Props) => {
     }
 
     try {
-      await addWish(parseInt(productId), authInfo.token);
+      await addWish(parseInt(productId));
       alert('관심 등록 완료');
     } catch (error) {
       console.error('Failed to add wish', error);

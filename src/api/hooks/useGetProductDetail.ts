@@ -10,7 +10,7 @@ export type ProductDetailRequestParams = {
 
 type Props = ProductDetailRequestParams;
 
-export type GoodsDetailResponseData = { data: ProductData };
+export type GoodsDetailResponseData = ProductData;
 
 const getProductDetail = async (params: ProductDetailRequestParams) => {
   const response = await fetchInstance.get<GoodsDetailResponseData>(

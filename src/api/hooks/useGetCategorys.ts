@@ -4,9 +4,7 @@ import type { CategoryData } from '@/types';
 
 import { fetchInstance } from '../instance';
 
-export type CategoryResponseData = {
-  data: CategoryData[];
-};
+export type CategoryResponseData = CategoryData[];
 
 const getCategories = async () => {
   const response = await fetchInstance.get<CategoryResponseData>('/api/categories');

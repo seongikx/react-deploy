@@ -4,7 +4,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { fetchInstance } from '@/api/instance'; // fetchInstance import
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { SplitLayout } from '@/components/common/layouts/SplitLayout';
-import { useAuth } from '@/provider/Auth'; // useAuth import
 import type { OrderFormData, OrderHistory } from '@/types';
 
 import { HEADER_HEIGHT } from '../../Layout/Header';
@@ -18,7 +17,6 @@ type Props = {
 
 export const OrderForm = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
-  const authInfo = useAuth(); // 인증 정보 가져오기
 
   const methods = useForm<OrderFormData>({
     defaultValues: {
@@ -43,20 +41,12 @@ export const OrderForm = ({ orderHistory }: Props) => {
 
     try {
       // 주문 요청
-      const response = await fetchInstance.post(
-        '/api/orders',
-        {
-          optionId: values.productId,
-          quantity: values.productQuantity,
-          message: values.messageCardTextMessage,
-          points: values.pointsUsed,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${authInfo?.token || ''}`,
-          },
-        },
-      );
+      const response = await fetchInstance.post('/api/orders', {
+        optionId: values.productId,
+        quantity: values.productQuantity,
+        message: values.messageCardTextMessage,
+        points: values.pointsUsed,
+      });
 
       // 주문 완료 메시지 출력
       alert(`${response.data.message}`);

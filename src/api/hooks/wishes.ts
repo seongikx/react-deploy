@@ -11,30 +11,18 @@ export type Wish = {
   };
 };
 
-export const addWish = async (productId: number, token: string): Promise<void> => {
+export const addWish = async (productId: number): Promise<void> => {
   try {
-    await fetchInstance.post(
-      '/api/wishes',
-      { productId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    await fetchInstance.post('/api/wishes', { productId });
   } catch (error) {
     console.error('Failed to add wish', error);
     throw error;
   }
 };
 
-export const removeWish = async (wishId: number, token: string): Promise<void> => {
+export const removeWish = async (wishId: number): Promise<void> => {
   try {
-    await fetchInstance.delete(`/api/wishes/${wishId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await fetchInstance.delete(`/api/wishes/${wishId}`);
   } catch (error) {
     console.error('Failed to remove wish', error);
     throw error;
@@ -42,16 +30,12 @@ export const removeWish = async (wishId: number, token: string): Promise<void> =
 };
 
 export const getWishes = async (
-  token: string,
   page: number = 0,
   size: number = 10,
   sort: string = 'createdDate,desc',
-): Promise<{ data: { content: Wish[]; totalPages: number; totalElements: number } }> => {
+): Promise<{ content: Wish[]; totalPages: number; totalElements: number }> => {
   try {
     const response = await fetchInstance.get('/api/wishes', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       params: {
         page,
         size,

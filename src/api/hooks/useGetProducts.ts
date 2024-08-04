@@ -24,14 +24,12 @@ type ProductsResponseData = {
 };
 
 type ProductsResponseRawData = {
-  data: {
-    content: ProductData[]; // 변경된 부분: raw 데이터 구조를 API 명세에 맞게 수정
-    totalPages: number;
-    totalElements: number;
-    size: number;
-    number: number;
-    last: boolean;
-  };
+  content: ProductData[]; // 변경된 부분: raw 데이터 구조를 API 명세에 맞게 수정
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  last: boolean;
 };
 
 const getProducts = async (params: RequestParams): Promise<ProductsResponseData> => {
@@ -46,7 +44,7 @@ const getProducts = async (params: RequestParams): Promise<ProductsResponseData>
     `/api/products/categories/${params.categoryId}?${queryParams.toString()}`,
   );
 
-  const data = response.data.data;
+  const data = response.data;
 
   return {
     content: data.content, // 변경된 부분: products는 data.data로
